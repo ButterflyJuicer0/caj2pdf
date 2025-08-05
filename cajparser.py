@@ -287,12 +287,16 @@ class CAJParser(object):
         with open("pdf.tmp", 'wb') as f:
             f.write(pdf_data)
 
-        # Use mutool to repair xref
+        # Use PyMuPDF to repair xref
         try:
-            check_output(["mutool", "clean", "pdf.tmp", "pdf_toc.pdf"], stderr=STDOUT)
-        except CalledProcessError as e:
-            print(e.output.decode("utf-8"))
-            raise SystemExit("Command mutool returned non-zero exit status " + str(e.returncode))
+            import fitz  # PyMuPDF
+            doc = fitz.open("pdf.tmp")
+            doc.save("pdf_toc.pdf")
+            doc.close()
+        except Exception as e:
+            print(f"PyMuPDF repair failed: {e}")
+            # Fallback: just copy the file
+            copy("pdf.tmp", "pdf_toc.pdf")
 
         # Add Outlines
         try:
@@ -630,11 +634,15 @@ class CAJParser(object):
         fp.write(output)
         fp.close()
 
-        # Use mutool to repair xref
+        # Use PyMuPDF to repair xref
         try:
-            check_output(["mutool", "clean", dest + ".tmp", dest], stderr=STDOUT)
-        except CalledProcessError as e:
-            print(e.output.decode("utf-8"))
-            raise SystemExit("Command mutool returned non-zero exit status " + str(e.returncode))
+            import fitz  # PyMuPDF
+            doc = fitz.open(dest + ".tmp")
+            doc.save(dest)
+            doc.close()
+        except Exception as e:
+            print(f"PyMuPDF repair failed: {e}")
+            # Fallback: just copy the file
+            copy(dest + ".tmp", dest)
 
         os.remove(dest + ".tmp")

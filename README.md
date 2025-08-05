@@ -36,20 +36,24 @@ cc -Wall `pkg-config --cflags jbig2dec` -fPIC -shared -o libjbig2codec.so decode
 
 - Python 3.3+
 - [PyPDF2](https://github.com/mstamy2/PyPDF2)
-- [mutool](https://mupdf.com/index.html)
+- [PyMuPDF](https://github.com/pymupdf/PyMuPDF) (替代 mutool)
+- [pdfplumber](https://github.com/jsvine/pdfplumber) (用于 PDF 转 TXT)
 
 除了Microsoft Windows：我们提供Microsoft Windows 32-bit/64-bit DLLs，HN 格式需要
 
 - C/C++编译器
 - libpoppler开发包，或libjbig2dec开发包
 
+**新功能**: 现在支持直接转换 CAJ 文件为 TXT 格式！
+
 ### 用法
 
+#### 基本转换功能
 ```
 # 打印文件基本信息（文件类型、页面数、大纲项目数）
 caj2pdf show [input_file]
 
-# 转换文件
+# 转换 CAJ 文件为 PDF
 caj2pdf convert [input_file] -o/--output [output_file]
 
 # 从 CAJ 文件中提取大纲信息并添加至 PDF 文件
@@ -57,12 +61,35 @@ caj2pdf convert [input_file] -o/--output [output_file]
 caj2pdf outlines [input_file] -o/--output [pdf_file]
 ```
 
+#### 新增：TXT 转换功能
+```
+# 将 PDF 文件转换为 TXT 文件
+python pdf2txt.py [input.pdf] -o [output.txt]
+
+# 批量转换目录中所有 CAJ 文件为 TXT
+batch_caj2txt.bat [directory]
+```
+
 ### 例
 
+#### 基本用法
 ```
 caj2pdf show test.caj
 caj2pdf convert test.caj -o output.pdf
 caj2pdf outlines test.caj -o printed.pdf
+```
+
+#### TXT 转换用法
+```
+# 单文件转换：CAJ → PDF → TXT
+caj2pdf convert thesis.caj -o thesis.pdf
+python pdf2txt.py thesis.pdf -o thesis.txt
+
+# 批量转换当前目录所有 CAJ 文件
+batch_caj2txt.bat .
+
+# 批量转换指定目录
+batch_caj2txt.bat C:\Documents\Papers
 ```
 
 ### 异常输出（IMPORTANT!!!）
@@ -70,6 +97,20 @@ caj2pdf outlines test.caj -o printed.pdf
 尽管这个项目目前有不少同学关注到了，但它**仍然只支持部分 caj 文件的转换**，必须承认这完全不是一个对普通用户足够友好的成熟项目。具体支持哪些不支持哪些，在前文也已经说了，但似乎很多同学并没有注意到。所以**如果你遇到以下两种输出，本项目目前无法帮助到你**。与此相关的 issue 不再回复。
 
 - `Unknown file type.`：未知文件类型；
+
+## 更新日志
+
+### 新功能 (feature/txt-support-pymupdf 分支)
+-  **PDF 转 TXT**: 使用 pdfplumber 实现高质量文本提取
+-  **批量转换**: 一键转换整个目录的 CAJ 文件为 TXT
+-  **依赖优化**: 使用 PyMuPDF 替代外部 mutool 工具
+-  **Windows 兼容**: 解决 Windows 系统依赖问题
+-  **错误处理**: 改进的错误处理和回退机制
+
+### 安装新依赖
+```bash
+pip install PyMuPDF pdfplumber
+```
 
 ## License
 
