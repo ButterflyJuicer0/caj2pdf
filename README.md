@@ -66,6 +66,9 @@ caj2pdf outlines [input_file] -o/--output [pdf_file]
 # 将 PDF 文件转换为 TXT 文件
 python pdf2txt.py [input.pdf] -o [output.txt]
 
+# 批量转换目录中所有 CAJ 文件为 PDF
+batch_caj2pdf.bat [directory]
+
 # 批量转换目录中所有 CAJ 文件为 TXT
 batch_caj2txt.bat [directory]
 ```
@@ -85,10 +88,14 @@ caj2pdf outlines test.caj -o printed.pdf
 caj2pdf convert thesis.caj -o thesis.pdf
 python pdf2txt.py thesis.pdf -o thesis.txt
 
-# 批量转换当前目录所有 CAJ 文件
+# 批量转换当前目录所有 CAJ 文件为 PDF
+batch_caj2pdf.bat .
+
+# 批量转换当前目录所有 CAJ 文件为 TXT
 batch_caj2txt.bat .
 
 # 批量转换指定目录
+batch_caj2pdf.bat C:\Documents\Papers
 batch_caj2txt.bat C:\Documents\Papers
 ```
 
